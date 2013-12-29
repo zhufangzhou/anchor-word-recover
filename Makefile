@@ -1,3 +1,2 @@
-source_file = truncate_vocabulary.cpp
-out: $(source_file)
-	g++ -g $(source_file) -o out
+truncate_vocabulary: truncate_vocabulary.cpp
+	g++ -g truncate_vocabulary.cpp -o truncate_vocabulary
