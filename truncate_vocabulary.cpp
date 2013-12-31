@@ -2,39 +2,21 @@
  * function: preprocess the dataset before learn topics
  * author: zhufangzhou
  * email: zhu.ark@gmail.com
- * data: 2013.12.29
+ * date: 2013.12.29
  */
-#include <iostream>
-#include <string>
-#include <vector>
-#include <map>
-#include <fstream>
-#include <Eigen/Sparse>
+#include "truncate_vocabulary.h"
 
-using namespace std;
-using namespace Eigen; 
-typedef Triplet<double> T;
-
-int main(int argc, char* argv[]) {
+SparseMatrix<double>* read_and_truncate_vocabulary(string input_dataset, string full_vocab, int cutoff) {
 	FILE *f_vocab, *f_stopwords, *f_dataset;
 	map<string, int> table;
-	string input_dataset, full_vocab, output_matrix, output_vocab;
+	string output_matrix, output_vocab;
 	char word[100];
 	bool *remove_words;
-	int cutoff, numwords, nword, ndoc, nnz;
+	int numwords, nword, ndoc, nnz;
 
-	if(argc < 3) {
-		cout << "input: input_dataset vocab_file cutoff";
-		exit(0);
-	}
-	// get the input_matrix name and the vocab_file name	
-	input_dataset = string(argv[1]);
-	full_vocab = string(argv[2]);
 	output_matrix = input_dataset + ".trunc";
 	output_vocab = full_vocab + ".trunc";
 	
-	// cutoff for the number of distinct documents that each word appears in
-	cutoff = atoi(argv[3]);
 	
 	// Read in the vocabulary and build a symbol table mapping wors to indices	
 	f_vocab = fopen(full_vocab.c_str(), "r");
@@ -103,13 +85,10 @@ int main(int argc, char* argv[]) {
 	}
 	SparseMatrix<double, ColMajor> *wd_mat_new = new SparseMatrix<double, ColMajor>(nword-removed_word_count, ndoc);
 	wd_mat_new->setFromTriplets(wd_mat_vec.begin(), wd_mat_vec.end());
-	cout << wd_mat_new->rows() << endl;
-	cout << wd_mat_new->cols() << endl;
-	cout << wd_mat_new->nonZeros() << endl;
-
+	
 	delete[] remove_words;
 	fclose(f_vocab);
 	fclose(f_stopwords);
 	fclose(f_dataset);
-	return 0;
+	return wd_mat_new;
 }

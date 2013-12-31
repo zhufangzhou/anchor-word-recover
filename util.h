@@ -2,6 +2,7 @@
 #define __MYUTIL
 
 #include <iostream>
+#include <cstdlib>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -64,8 +65,9 @@ class Params {
 				}
 			}
 		}
-
+		// show the settings
 		void display_settings() {
+			cout << "===================== settings =========================" << endl;
 			cout << "log_prefix:" << log_prefix << endl;
 			cout << "max_threads:" << max_threads << endl;
 			cout << "eps:" << eps << endl;
@@ -74,6 +76,7 @@ class Params {
 			cout << "seed:" << seed << endl;
 			cout << "anchor_thresh" << anchor_thresh << endl;
 			cout << "top_words" << top_words << endl;
+			cout << "========================================================" << endl;
 		}
 };
 
