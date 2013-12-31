@@ -1,8 +1,8 @@
 /*
- *	function: preprocess the dataset before learn topics
- *	author: zhufangzhou
- *	email: zhu.ark@gmail.com
- *	data: 2013.12.29
+ * function: preprocess the dataset before learn topics
+ * author: zhufangzhou
+ * email: zhu.ark@gmail.com
+ * data: 2013.12.29
  */
 #include <iostream>
 #include <string>
@@ -54,6 +54,7 @@ int main(int argc, char* argv[]) {
 			remove_words[table[word]] = true;
 		}
 	}
+
 	// Load the dataset and remove the stopwords
 	f_dataset = fopen(input_dataset.c_str(), "r");
 	fscanf(f_dataset, "%d%d%d", &ndoc, &nword, &nnz);
@@ -66,22 +67,21 @@ int main(int argc, char* argv[]) {
 
 	// load the data, store schema is RowMajor, so jc[i+1]-jc[i] is the number of distinct documents that this word appears in 
 	SparseMatrix<double, RowMajor> *wd_mat = new SparseMatrix<double, RowMajor>(nword, ndoc);
-	wd_mat->reserve(nnz);
 	vector<T> wd_mat_vec;
 	int i, j, val;
 	// dataset format: doc word count
 	while(~fscanf(f_dataset, "%d%d%d", &i, &j, &val)) {
 		wd_mat_vec.push_back(T(j-1, i-1, val));
-		//wd_mat->insert(j-1, i-1) = (double)val;
 	}
+	wd_mat->reserve(nnz);						// set the nnz of the matrix
 	wd_mat->setFromTriplets(wd_mat_vec.begin(), wd_mat_vec.end());
-	wd_mat->makeCompressed();		// compress the matrix with csc
+	wd_mat->makeCompressed();					// compress the matrix with csc
 	int *ir, *jc, start, end;
 	double *ptr;
 	jc = wd_mat->outerIndexPtr();
 	ir = wd_mat->innerIndexPtr(); 
 	ptr = wd_mat->valuePtr();
-	wd_mat_vec.clear();							// remain improved !!!!!!!!!
+	wd_mat_vec.clear();							// clear the vector to create another matrix
 
 	int removed_word_count = 0;
 	for(int i = 0; i < nword; i++) {
@@ -92,7 +92,6 @@ int main(int argc, char* argv[]) {
 			if(end - start >= cutoff) {
 				for(j = start; j < end; j++) {
 					wd_mat_vec.push_back(T(i-removed_word_count, ir[j], ptr[j]));
-//					wd_mat_new->insert(i, ir[j]) = ptr[j];
 				}
 			} else {
 				remove_words[i] = true;
@@ -107,7 +106,8 @@ int main(int argc, char* argv[]) {
 	cout << wd_mat_new->rows() << endl;
 	cout << wd_mat_new->cols() << endl;
 	cout << wd_mat_new->nonZeros() << endl;
-	delete wd_mat;
+
+	delete[] remove_words;
 	fclose(f_vocab);
 	fclose(f_stopwords);
 	fclose(f_dataset);
