@@ -1,3 +1,6 @@
-source_file=truncate_vocabulary.cpp learn_topics.cpp
+source_file=truncate_vocabulary.cpp learn_topics.cpp Q_matrix.cpp
 learn_topics: $(source_file)
-	g++ -g $(source_file) -o learn_topics
+	g++ -g $(source_file) -o learn_topics -lm
+
+clean:
+	rm learn_topics

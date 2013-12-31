@@ -6,7 +6,7 @@
  */
 #include "truncate_vocabulary.h"
 
-SparseMatrix<double>* read_and_truncate_vocabulary(string input_dataset, string full_vocab, int cutoff) {
+SparseMatrix<double, RowMajor>* read_and_truncate_vocabulary(string input_dataset, string full_vocab, int cutoff) {
 	FILE *f_vocab, *f_stopwords, *f_dataset;
 	map<string, int> table;
 	string output_matrix, output_vocab;
@@ -83,7 +83,7 @@ SparseMatrix<double>* read_and_truncate_vocabulary(string input_dataset, string 
 			removed_word_count++;
 		}
 	}
-	SparseMatrix<double, ColMajor> *wd_mat_new = new SparseMatrix<double, ColMajor>(nword-removed_word_count, ndoc);
+	SparseMatrix<double, RowMajor> *wd_mat_new = new SparseMatrix<double, RowMajor>(nword-removed_word_count, ndoc);
 	wd_mat_new->setFromTriplets(wd_mat_vec.begin(), wd_mat_vec.end());
 	
 	delete[] remove_words;
