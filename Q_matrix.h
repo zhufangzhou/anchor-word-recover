@@ -11,6 +11,6 @@
 using namespace std;
 using namespace Eigen;
 
-MatrixXd* generate_Q_matrix(SparseMatrix<double, RowMajor>* wd_mat, int words_per_doc = -1);
+MatrixXd generate_Q_matrix(SparseMatrix<double, RowMajor> wd_mat, int words_per_doc = -1);
 
 #endif

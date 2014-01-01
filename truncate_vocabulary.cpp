@@ -1,12 +1,16 @@
 /*
- * function: preprocess the dataset before learn topics
  * author: zhufangzhou
  * email: zhu.ark@gmail.com
  * date: 2013.12.29
  */
 #include "truncate_vocabulary.h"
 
-SparseMatrix<double, RowMajor>* read_and_truncate_vocabulary(string input_dataset, string full_vocab, int cutoff) {
+/*
+ * function: preprocess the dataset before learn topics
+ * input: dataset path, vocabulary file path, cutoff
+ * output: W*D matrix(word-document matrix)
+ */
+SparseMatrix<double, RowMajor> read_and_truncate_vocabulary(string input_dataset, string full_vocab, int cutoff) {
 	FILE *f_vocab, *f_stopwords, *f_dataset;
 	map<string, int> table;
 	string output_matrix, output_vocab;
@@ -48,21 +52,21 @@ SparseMatrix<double, RowMajor>* read_and_truncate_vocabulary(string input_datase
 	cout << "Number of documents is " << ndoc << endl;
 
 	// load the data, store schema is RowMajor, so jc[i+1]-jc[i] is the number of distinct documents that this word appears in 
-	SparseMatrix<double, RowMajor> *wd_mat = new SparseMatrix<double, RowMajor>(nword, ndoc);
+	SparseMatrix<double, RowMajor> wd_mat(nword, ndoc);
 	vector<T> wd_mat_vec;
 	int i, j, val;
 	// dataset format: doc word count
 	while(~fscanf(f_dataset, "%d%d%d", &i, &j, &val)) {
 		wd_mat_vec.push_back(T(j-1, i-1, val));
 	}
-	wd_mat->reserve(nnz);						// set the nnz of the matrix
-	wd_mat->setFromTriplets(wd_mat_vec.begin(), wd_mat_vec.end());
-	wd_mat->makeCompressed();					// compress the matrix with csc
+	wd_mat.reserve(nnz);						// set the nnz of the matrix
+	wd_mat.setFromTriplets(wd_mat_vec.begin(), wd_mat_vec.end());
+	wd_mat.makeCompressed();					// compress the matrix with csc
 	int *ir, *jc, start, end;
 	double *ptr;
-	jc = wd_mat->outerIndexPtr();
-	ir = wd_mat->innerIndexPtr(); 
-	ptr = wd_mat->valuePtr();
+	jc = wd_mat.outerIndexPtr();
+	ir = wd_mat.innerIndexPtr(); 
+	ptr = wd_mat.valuePtr();
 	wd_mat_vec.clear();							// clear the vector to create another matrix
 
 	int removed_word_count = 0;
@@ -83,8 +87,8 @@ SparseMatrix<double, RowMajor>* read_and_truncate_vocabulary(string input_datase
 			removed_word_count++;
 		}
 	}
-	SparseMatrix<double, RowMajor> *wd_mat_new = new SparseMatrix<double, RowMajor>(nword-removed_word_count, ndoc);
-	wd_mat_new->setFromTriplets(wd_mat_vec.begin(), wd_mat_vec.end());
+	SparseMatrix<double, RowMajor> wd_mat_new(nword-removed_word_count, ndoc);
+	wd_mat_new.setFromTriplets(wd_mat_vec.begin(), wd_mat_vec.end());
 	
 	delete[] remove_words;
 	fclose(f_vocab);
