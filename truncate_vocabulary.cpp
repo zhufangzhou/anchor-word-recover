@@ -10,13 +10,14 @@
  * input: dataset path, vocabulary file path, cutoff
  * output: W*D matrix(word-document matrix)
  */
-SparseMatrix<double, RowMajor> read_and_truncate_vocabulary(string input_dataset, string full_vocab, int cutoff) {
+SparseMatrix<double, RowMajor> read_and_truncate_vocabulary(string input_dataset, string full_vocab, int cutoff, vector<string> &vocab_vec) {
 	FILE *f_vocab, *f_stopwords, *f_dataset;
 	map<string, int> table;
 	string output_matrix, output_vocab;
 	char word[100];
 	bool *remove_words;
 	int numwords, nword, ndoc, nnz;
+	vector<string> vocab_full;
 
 	output_matrix = input_dataset + ".trunc";
 	output_vocab = full_vocab + ".trunc";
@@ -28,6 +29,7 @@ SparseMatrix<double, RowMajor> read_and_truncate_vocabulary(string input_dataset
 	while(~fscanf(f_vocab, "%s", word)) {
 		if(table.find(string(word)) == table.end()) {
 			table.insert(pair<string, int>(string(word), numwords++));
+			vocab_full.push_back(string(word));
 		}
 	}
 	remove_words = new bool[numwords];
@@ -89,6 +91,12 @@ SparseMatrix<double, RowMajor> read_and_truncate_vocabulary(string input_dataset
 	}
 	SparseMatrix<double, RowMajor> wd_mat_new(nword-removed_word_count, ndoc);
 	wd_mat_new.setFromTriplets(wd_mat_vec.begin(), wd_mat_vec.end());
+
+	for(int i = 0; i < vocab_full.size(); i++) {
+		if(remove_words[i] != i) {
+			vocab_vec.push_back(vocab_full[i]);
+		}
+	}
 	
 	delete[] remove_words;
 	fclose(f_vocab);

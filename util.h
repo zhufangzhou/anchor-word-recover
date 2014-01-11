@@ -5,17 +5,12 @@
 #include <cstdlib>
 #include <fstream>
 #include <string>
+#include <cstring>
 #include <vector>
 #include <ctime>
 
 using namespace std;
 
-void trim(string & str ) {
-	int s = str.find_first_not_of(" ");
-	int e = str.find_last_not_of(" ");
-	str = str.substr(s,e-s+1);
-	return;
-}
 
 class Params {
 	public:
@@ -77,6 +72,13 @@ class Params {
 			cout << "anchor_thresh" << anchor_thresh << endl;
 			cout << "top_words" << top_words << endl;
 			cout << "========================================================" << endl;
+		}
+
+		void trim(string & str ) {
+			int s = str.find_first_not_of(" ");
+			int e = str.find_last_not_of(" ");
+			str = str.substr(s,e-s+1);
+			return;
 		}
 };
 
