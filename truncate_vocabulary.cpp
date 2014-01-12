@@ -77,7 +77,7 @@ SparseMatrix<double, RowMajor> read_and_truncate_vocabulary(string input_dataset
 			start = jc[i];
 			end = jc[i+1];
 			// if number of distinct documents that this word appears in is >= cutoff
-			if(end - start >= cutoff) {
+			if((end - start) >= cutoff) {
 				for(j = start; j < end; j++) {
 					wd_mat_vec.push_back(T(i-removed_word_count, ir[j], ptr[j]));
 				}
@@ -92,13 +92,12 @@ SparseMatrix<double, RowMajor> read_and_truncate_vocabulary(string input_dataset
 	SparseMatrix<double, RowMajor> wd_mat_new(nword-removed_word_count, ndoc);
 	wd_mat_new.setFromTriplets(wd_mat_vec.begin(), wd_mat_vec.end());
 
-	for(int i = 0; i < vocab_full.size(); i++) {
-		if(remove_words[i] != i) {
+	for(int i = 0; i < numwords; i++) {
+		if(!remove_words[i]) {
 			vocab_vec.push_back(vocab_full[i]);
 		}
 	}
 	
-	delete[] remove_words;
 	fclose(f_vocab);
 	fclose(f_stopwords);
 	fclose(f_dataset);

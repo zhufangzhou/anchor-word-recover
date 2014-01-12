@@ -51,7 +51,7 @@ vector<int> Projection_Find(MatrixXd Q_orig, int K, vector<int> candidates) {
 	// let p1 be the origin of our coordinate system
 	for(vector<int>::iterator iter = candidates.begin(); iter != candidates.end(); iter++) {
 		index = *iter;
-		Q.row(index) -= anchor_words[index];
+		Q.row(index) = Q.row(index) - anchor_words[0].transpose();
 	}
 	
 	// find the farthest point from p1
@@ -73,7 +73,7 @@ vector<int> Projection_Find(MatrixXd Q_orig, int K, vector<int> candidates) {
 		max_dist = 0;
 		for(vector<int>::iterator iter = candidates.begin(); iter != candidates.end(); iter++) {
 			index = *iter;
-			Q.row(index) = Q.row(index) - Q.row(index).dot(basis[j-1])*basis[j-1];
+			Q.row(index) = Q.row(index) - Q.row(index).dot(basis[j-1].transpose())*basis[j-1].transpose();
 			dist = Q.row(index).dot(Q.row(index));
 			if(dist > max_dist) {
 				max_dist = dist;
@@ -102,7 +102,7 @@ vector<int> findAnchors(MatrixXd Q, int K, struct Params* param, vector<int> can
 
 	// reduced dimension random projection method for recovering anchor words
 	Q_red = Random_Projection(Q.transpose(), new_dim, param->seed);
-	Q_red.transposeInPlace();
+	Q_red.transposeInPlace();				// now Q_red is W*new_dim
 
 	anchor_indices = Projection_Find(Q_red, K, candidates);
 

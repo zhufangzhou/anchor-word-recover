@@ -64,13 +64,14 @@ int main(int argc, char* argv[]) {
 
 
 	// check that Q sum is 1 or close to it
-	cout << "Q sum is" << Q.sum() << endl;		
+	cout << "Q sum is " << Q.sum() << endl;		
 	
 	cout << "done reading documents" << endl;
 
 	// find anchors- this step uses a random projection into low dimensional space
 	vector<int> anchors;
 	anchors = findAnchors(Q, K, param, candidate_anchor);
+
 
 	cout << "anchors are:" << endl;
 	for(vector<int>::iterator iter = anchors.begin(); iter != anchors.end(); iter++) {
