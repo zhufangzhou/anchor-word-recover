@@ -13,7 +13,7 @@
 #include "truncate_vocabulary.h"
 #include "Q_matrix.h"
 #include "findAnchor.h"
-
+#include "fastRecover.h"
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -77,5 +77,8 @@ int main(int argc, char* argv[]) {
 	for(vector<int>::iterator iter = anchors.begin(); iter != anchors.end(); iter++) {
 			cout << *iter << ": " << vocab_vec[*iter] << endl;
 	}
+
+	// recover topics
+	do_recovery(Q, anchors, loss, param);	
 	return 0;
 }

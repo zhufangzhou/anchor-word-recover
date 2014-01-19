@@ -1,8 +1,3 @@
-/*
- * author: zhufangzhou
- * email: zhu.ark@gmail.com
- * date: 2013.12.29
- */
 #include "truncate_vocabulary.h"
 
 /*

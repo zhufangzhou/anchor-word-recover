@@ -1,8 +1,5 @@
 /*
  * function: find the anchor words and return the index in the vocabulary file 
- * author: zhufangzhou
- * email: zhu.ark@gmail.com
- * date: 2014.1.10
  */
 #include "findAnchor.h"
 MatrixXd Random_Projection(MatrixXd M, int new_dim, int seed) {

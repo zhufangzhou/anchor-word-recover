@@ -1,4 +1,4 @@
-source_file=truncate_vocabulary.cpp Q_matrix.cpp findAnchor.cpp learn_topics.cpp
+source_file=truncate_vocabulary.cpp Q_matrix.cpp findAnchor.cpp fastRecover.cpp learn_topics.cpp
 learn_topics: $(source_file)
 	g++ -g $(source_file) -o learn_topics -lm
 
